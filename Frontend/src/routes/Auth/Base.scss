@@ -1,0 +1,42 @@
+.dashboard-header{
+  background: #0050d3 !important;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+
+  padding-left: 20px!important;
+  padding-right: 20px!important;
+
+
+  color: white !important;
+  font-size: 20px;
+
+  box-shadow: 0 6px 5px #BABABA;
+
+  display: flex;
+  flex:1;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dashboard-logo{
+  width: 40px;
+  margin-right: 20px;
+  margin-bottom: 5px;
+}
+
+.dashboard-title{
+  color: white !important;
+}
+
+.dashboard-content{
+  margin-top: 64px;
+  min-height: calc(100vh - 64px);
+}
+
+
+.logout-button{
+  align-self: center;
+  color: white;
+}
+
