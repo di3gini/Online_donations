@@ -1,5 +1,5 @@
 import React from 'react'
-import { LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
+import { LogoutOutlined, FileTextOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, useHistory } from 'react-router-dom'
 import { Button, Layout, Row, Tooltip } from 'antd'
 import './Base.scss'
@@ -21,24 +21,24 @@ const Base = ({ Component }) => {
       <Header className='dashboard-header'>
         <Row justify='space-between' style={{ width: '100%' }}>
           <Link to='/'>
-            <img src='/images/shops.svg' alt='logo' className='dashboard-logo' />
-            <span className='dashboard-title'>La Tienda</span>
+            <img src='/images/donate.svg' alt='logo' className='dashboard-logo' />
+            <span className='dashboard-title'>Online Donations</span>
           </Link>
           <div>
             {
               token &&
-                <Tooltip title='Cerrar Sesion' placement='bottomLeft'>
+                <Tooltip title='Log out' placement='bottomLeft'>
                   <Button type='text' size='large' icon={<LogoutOutlined style={{ color: '#FFFFFF' }} />} onClick={doLogout} />
                 </Tooltip>
             }
             {
               !token &&
-                <Tooltip title='Iniciar Sesion' placement='bottomLeft'>
+                <Tooltip title='Login' placement='bottomLeft'>
                   <Button type='text' size='large' icon={<UserOutlined style={{ color: '#FFFFFF' }} />} onClick={toLogin} />
                 </Tooltip>
             }
-            <Tooltip title='Ver Carretilla' placement='bottomLeft'>
-              <Button type='text' size='large' icon={<ShoppingCartOutlined style={{ color: '#FFFFFF' }} />} />
+            <Tooltip title='See donations' placement='bottomLeft'>
+              <Button type='text' size='large' icon={<FileTextOutlined style={{ color: '#FFFFFF' }} />} />
             </Tooltip>
           </div>
         </Row>

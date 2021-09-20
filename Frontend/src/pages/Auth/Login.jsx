@@ -35,7 +35,7 @@ const Login = ({ history }) => {
       if (hasError) {
         setShowError(true)
       } else {
-        history.replace('/donation')
+        history.replace('/')
       }
     }
   }, [APIError, finished, hasError, history])

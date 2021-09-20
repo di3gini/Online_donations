@@ -111,6 +111,7 @@ const Register = ({ history }) => {
           title='Session expired'
           onConfirm={() => dispatch(hideLogout())}
         />
+
       </Content>
     </Layout>
   )

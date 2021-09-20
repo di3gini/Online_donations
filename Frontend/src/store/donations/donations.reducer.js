@@ -14,8 +14,6 @@ const DonationsReducer = (state, { type, data }) => {
         countries: data.countries
       }
     case successState(actionTypes.GET_INSTITUTIONS):
-      console.log('institutions')
-      console.log(data.institutions)
       if (data.institutions !== undefined) {
         return {
           ...state,

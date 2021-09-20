@@ -4,14 +4,15 @@ import './Donation.scss'
 import { creditCard, inputRequired, cvc } from '../../utils/forms.utils'
 import SweetAlert from 'react-bootstrap-sweetalert/dist'
 import { selectCountries, selectInstitutions } from '../../store/donations/donations.selectors'
+import { selectCurrentUser, selectAccessToken, selectIsLogout } from '../../store/auth/auth.selectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCountries, getInstitutions, donate } from '../../store/donations/donations.actions'
 import { UNEXPECTED_OOPS } from '../../utils/messages.utils'
 import { useHasErrors } from '../../store/app/error/error.hooks'
 import { useIsLoading } from '../../store/app/loading/loading.hooks'
 import { actionTypes } from '../../store/donations/donations.types'
-import { selectIsLogout } from '../../store/auth/auth.selectors'
-// import { useHistory } from 'react-router-dom'
+
+import { useHistory } from 'react-router-dom'
 import { hideLogout } from '../../store/auth/auth.actions'
 // import isCreditCard from 'validator/es'
 
@@ -21,34 +22,60 @@ const { Option } = Select
 
 const Donation = () => {
   const [showError, setShowError] = useState(false)
+  // const [showSucces, setShowSucces] = useState(false)
   const dispatch = useDispatch()
   const toggleError = () => setShowError(!showError)
-
-  const [loading] = useIsLoading([actionTypes.REGISTER])
+  const token = useSelector(selectAccessToken)
+  const [loading, finished] = useIsLoading([actionTypes.DONATE])
   const isLogout = useSelector(selectIsLogout)
   const dateFormat = 'YYYY/MM'
-  const [APIError] = useHasErrors([actionTypes.DONATE])
-  // const history = useHistory()
+  const [APIError, hasError] = useHasErrors([actionTypes.DONATE])
+  const history = useHistory()
   const countries = useSelector(selectCountries)
   const institutions = useSelector(selectInstitutions)
+  const user = useSelector(selectCurrentUser)
   // const [modal, contextHolder] = Modal.useModal()
+  const [showSuccess, setShowSuccess] = useState(false)
   const [donateForm] = Form.useForm()
-  const onSubmit = ({ email, firstName, lastName, DPI, address, password }) => {
-    dispatch(donate())
-    console.log(countries)
+  const onSubmit = ({ amount, idInstitution }) => {
+    if (cardAuth) {
+      dispatch(donate(amount, user.idUser, idInstitution))
+    }
   }
 
+  /* TODO
+  Here would be implementated the credit card payment service
+  */
+  const cardAuth = ({ cardNumber, cvcNumber, expDate }) => {
+    if (cardNumber !== undefined && cvcNumber !== undefined && expDate !== undefined) {
+      return true
+    }
+    return false
+  }
+
+  useEffect(() => {
+    if (!token) {
+      history.replace('/login')
+    }
+  }, [history, token])
   const init = () => {
-    console.log('init')
     dispatch(getCountries())
     dispatch(getInstitutions({ idCountry: 35 }))
-    console.log('after init ' + countries)
   }
 
   useEffect(
     init, [dispatch]
   )
 
+  useEffect(() => {
+    if (finished) {
+      if (hasError) {
+        setShowError(true)
+      } else {
+        setShowSuccess(true)
+      }
+    }
+  }, [APIError, finished, hasError, history])
   const onCountryChange = () => {
     dispatch(getInstitutions({ idCountry: donateForm.getFieldValue('country') }))
   }
@@ -75,7 +102,7 @@ const Donation = () => {
                 }
               </Select>
             </Form.Item>
-            <Form.Item name='institution' label='Institution' rules={[inputRequired]}>
+            <Form.Item name='idInstitution' label='Institution' rules={[inputRequired]}>
               <Select style={{ width: 350 }}>
                 {
                   institutions.map((institution) =>
@@ -143,10 +170,17 @@ const Donation = () => {
         <SweetAlert
           error
           show={isLogout}
-          title='La sesión ha expirado'
+          title='Session expired'
           onConfirm={() => dispatch(hideLogout())}
         />
       </Content>
+
+      <SweetAlert
+        success
+        show={showSuccess}
+        onConfirm={() => setShowSuccess(false)}
+        title='Thanks for your donation!'
+      />
     </Layout>
   )
 }

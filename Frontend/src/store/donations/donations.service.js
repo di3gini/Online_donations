@@ -7,6 +7,10 @@ class DonationsService {
   getInstitutions =
     ({ idCountry }) =>
       $http.get(`/catalog/institutions/${idCountry}`, {})
+
+  donate =
+    ({ amount, idUser, idInstitution }) =>
+      $http.post('/donation/donate', { amount, idUser, idInstitution })
 }
 
 export default new DonationsService()
