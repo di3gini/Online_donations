@@ -5,6 +5,7 @@
     "standard-react"
   ],
   "rules": {
+
     "react/prop-types": 0,
     "func-style": [
       "error",
@@ -13,15 +14,7 @@
         "allowArrowFunctions": true
       }
     ],
-    "no-console": [
-      "error",
-      {
-        "allow": [
-          "warn",
-          "error"
-        ]
-      }
-    ],
+    "no-console": "off",
     "no-var": "error",
     "prefer-arrow-callback": "error",
     "quote-props": [

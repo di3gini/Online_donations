@@ -1,107 +1,161 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Col, Form, Input, Layout, Row } from 'antd'
-import './Login.scss'
-import { dpi, inputRequired, min8, typeEmail } from '../../utils/forms.utils'
+import { Button, Card, Col, DatePicker, Form, InputNumber, Layout, Row, Select, Typography } from 'antd'
+import './Donation.scss'
+import { creditCard, inputRequired, cvc } from '../../utils/forms.utils'
 import SweetAlert from 'react-bootstrap-sweetalert/dist'
+import { selectCountries, selectInstitutions } from '../../store/donations/donations.selectors'
+import { selectCurrentUser, selectAccessToken, selectIsLogout } from '../../store/auth/auth.selectors'
 import { useDispatch, useSelector } from 'react-redux'
-import { hideLogout, register } from '../../store/auth/auth.actions'
+import { getCountries, getInstitutions, donate } from '../../store/donations/donations.actions'
 import { UNEXPECTED_OOPS } from '../../utils/messages.utils'
 import { useHasErrors } from '../../store/app/error/error.hooks'
 import { useIsLoading } from '../../store/app/loading/loading.hooks'
-import { actionTypes } from '../../store/auth/auth.types'
-import { selectIsLogout } from '../../store/auth/auth.selectors'
-import { Link } from 'react-router-dom'
+import { actionTypes } from '../../store/donations/donations.types'
+
+import { useHistory } from 'react-router-dom'
+import { hideLogout } from '../../store/auth/auth.actions'
+// import isCreditCard from 'validator/es'
 
 const { Content } = Layout
+const { Title } = Typography
+const { Option } = Select
 
-const Donation = ({ history }) => {
+const Donation = () => {
   const [showError, setShowError] = useState(false)
+  // const [showSucces, setShowSucces] = useState(false)
   const dispatch = useDispatch()
   const toggleError = () => setShowError(!showError)
-
-  const [loading, finished] = useIsLoading([actionTypes.REGISTER])
-  const [APIError, hasError] = useHasErrors([actionTypes.REGISTER])
+  const token = useSelector(selectAccessToken)
+  const [loading, finished] = useIsLoading([actionTypes.DONATE])
   const isLogout = useSelector(selectIsLogout)
-
-  const onSubmit = ({ email, firstName, lastName, DPI, address, password }) => {
-    dispatch(register({ email, firstName, lastName, DPI, address, password }))
+  const dateFormat = 'YYYY/MM'
+  const [APIError, hasError] = useHasErrors([actionTypes.DONATE])
+  const history = useHistory()
+  const countries = useSelector(selectCountries)
+  const institutions = useSelector(selectInstitutions)
+  const user = useSelector(selectCurrentUser)
+  // const [modal, contextHolder] = Modal.useModal()
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [donateForm] = Form.useForm()
+  const onSubmit = ({ amount, idInstitution }) => {
+    if (cardAuth) {
+      dispatch(donate(amount, user.idUser, idInstitution))
+    }
   }
+
+  /* TODO
+  Here would be implementated the credit card payment service
+  */
+  const cardAuth = ({ cardNumber, cvcNumber, expDate }) => {
+    if (cardNumber !== undefined && cvcNumber !== undefined && expDate !== undefined) {
+      return true
+    }
+    return false
+  }
+
+  useEffect(() => {
+    if (!token) {
+      history.replace('/login')
+    }
+  }, [history, token])
+  const init = () => {
+    dispatch(getCountries())
+    dispatch(getInstitutions({ idCountry: 35 }))
+  }
+
+  useEffect(
+    init, [dispatch]
+  )
 
   useEffect(() => {
     if (finished) {
       if (hasError) {
         setShowError(true)
       } else {
-        history.replace('/')
+        setShowSuccess(true)
       }
     }
   }, [APIError, finished, hasError, history])
+  const onCountryChange = () => {
+    dispatch(getInstitutions({ idCountry: donateForm.getFieldValue('country') }))
+  }
+
+  const disabledDate = (value) => {
+    // Can not select days before today and today
+    return value < Date.now()
+  }
 
   return (
     <Layout>
       <Content className='login-content'>
         <Card>
-          <img src='/public/images/donation.svg' alt='logo' className='login-logo' />
-          <Form layout='vertical' onFinish={onSubmit}>
-            <Form.Item
-              label='Correo'
-              name='email'
-              rules={[inputRequired, typeEmail]}
-            >
-              <Input />
+          <img src='/images/donate.svg' alt='logo' className='login-logo' />
+          <Title level={4}>Thanks for donating!</Title>
+          <p>Please, fill up the next form to fulfill your donation</p>
+          <Form layout='vertical' onFinish={onSubmit} form={donateForm}>
+            <Form.Item name='country' label='Country' initialValue={35}>
+              <Select style={{ width: 350 }} onChange={onCountryChange}>
+                {
+                  countries.map((country) =>
+                    <Option value={country.id} key={`${country.id}`}>{country.name}</Option>
+                  )
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item name='idInstitution' label='Institution' rules={[inputRequired]}>
+              <Select style={{ width: 350 }}>
+                {
+                  institutions.map((institution) =>
+                    <Option value={institution.id} key={`${institution.id}`}>{institution.name}</Option>
+                  )
+                }
+              </Select>
             </Form.Item>
 
+            <Form.Item
+              label='Credit Card number'
+              name='cardNumber'
+              rules={[inputRequired, creditCard]}
+            >
+              <InputNumber maxLength={16} style={{ width: 350 }} stringMode />
+            </Form.Item>
             <Row>
               <Col span={12}>
-                <Form.Item
-                  label='Nombres'
-                  name='firstName'
-                  rules={[inputRequired]}
-                >
-                  <Input />
+                <Form.Item label='Expiration date' name='expDate' rules={[inputRequired]}>
+                  <DatePicker format={dateFormat} picker='month' disabledDate={disabledDate} />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label='Apellidos'
+                  label='CVC'
                   name='lastName'
-                  rules={[inputRequired]}
+                  rules={[inputRequired, cvc]}
                 >
-                  <Input />
+                  <InputNumber max={999} maxLength={3} stringMode style={{ width: 169 }} />
                 </Form.Item>
               </Col>
             </Row>
 
             <Form.Item
-              label='DPI'
-              name='DPI'
-              rules={[inputRequired, dpi]}
-            >
-              <Input maxLength={13} />
-            </Form.Item>
-
-            <Form.Item
-              label='Dirección'
-              name='address'
+              label='Amount '
+              name='amount'
               rules={[inputRequired]}
             >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label='Contraseña'
-              name='password'
-              rules={[inputRequired, min8]}
-            >
-              <Input.Password />
+              <InputNumber
+                style={{
+                  width: 200
+                }}
+                formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                defaultValue={10}
+              />
             </Form.Item>
 
             <Form.Item className='login-input'>
               <Button type='primary' size='large' shape='round' htmlType='submit' className='login-submit' loading={loading}>
-                Registrarse
+                Donate
               </Button>
               <br />
-              <span>¿Ya tienes una cuenta?</span> <Link to='/login'> Ve al login</Link>
             </Form.Item>
           </Form>
         </Card>
@@ -116,11 +170,18 @@ const Donation = ({ history }) => {
         <SweetAlert
           error
           show={isLogout}
-          title='La sesión ha expirado'
+          title='Session expired'
           onConfirm={() => dispatch(hideLogout())}
         />
       </Content>
+
+      <SweetAlert
+        success
+        show={showSuccess}
+        onConfirm={() => setShowSuccess(false)}
+        title='Thanks for your donation!'
+      />
     </Layout>
   )
 }
-export default Register
+export default Donation
