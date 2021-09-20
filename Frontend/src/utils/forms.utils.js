@@ -2,33 +2,34 @@ import moment from 'moment'
 
 export const inputRequired = {
   required: true,
-  message: 'Requerido'
+  message: 'Required'
 }
 
 export const typeEmail = {
   type: 'email',
-  message: 'Ingresa un correo electrónico válido'
+  message: 'Use a valid email'
 }
 
 export const min8 = {
   min: 8,
-  message: 'La contraseña debe tener al menos 8 caractéres'
+  message: 'Password must have at least 8 characters'
 }
 
 export const dpi = {
   min: 13,
   max: 13,
-  message: 'EL DPI debe tener 13 caractéres'
+  message: 'ID must have at least 13 characters'
 }
 
-export const min20 = {
-  min: 20,
-  message: 'El comentario debe tener al menos 20 caracteres.'
+export const cvc = {
+  min: 3,
+  message: 'Must be a valid CVC number'
 }
 
-export const typeNumber = {
-  type: 'number',
-  message: 'Ingresa un precio válido'
+export const creditCard = {
+  min: 16,
+  max: 16,
+  message: 'Must provide a valid card number with 16 numbers'
 }
 
 export const maxDateToday = (current) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Col, DatePicker, Form, Input, Layout, Row, Select, Typography } from 'antd'
+import { Button, Card, Col, DatePicker, Form, InputNumber, Layout, Row, Select, Typography } from 'antd'
 import './Donation.scss'
-import { dpi, inputRequired } from '../../utils/forms.utils'
+import { creditCard, inputRequired, cvc } from '../../utils/forms.utils'
 import SweetAlert from 'react-bootstrap-sweetalert/dist'
 import { selectCountries, selectInstitutions } from '../../store/donations/donations.selectors'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +13,7 @@ import { actionTypes } from '../../store/donations/donations.types'
 import { selectIsLogout } from '../../store/auth/auth.selectors'
 // import { useHistory } from 'react-router-dom'
 import { hideLogout } from '../../store/auth/auth.actions'
+// import isCreditCard from 'validator/es'
 
 const { Content } = Layout
 const { Title } = Typography
@@ -52,6 +53,11 @@ const Donation = () => {
     dispatch(getInstitutions({ idCountry: donateForm.getFieldValue('country') }))
   }
 
+  const disabledDate = (value) => {
+    // Can not select days before today and today
+    return value < Date.now()
+  }
+
   return (
     <Layout>
       <Content className='login-content'>
@@ -61,7 +67,7 @@ const Donation = () => {
           <p>Please, fill up the next form to fulfill your donation</p>
           <Form layout='vertical' onFinish={onSubmit} form={donateForm}>
             <Form.Item name='country' label='Country' initialValue={35}>
-              <Select style={{ width: 250 }} onChange={onCountryChange}>
+              <Select style={{ width: 350 }} onChange={onCountryChange}>
                 {
                   countries.map((country) =>
                     <Option value={country.id} key={`${country.id}`}>{country.name}</Option>
@@ -69,8 +75,8 @@ const Donation = () => {
                 }
               </Select>
             </Form.Item>
-            <Form.Item name='idInstitution' label='Institution'>
-              <Select style={{ width: 250 }}>
+            <Form.Item name='institution' label='Institution' rules={[inputRequired]}>
+              <Select style={{ width: 350 }}>
                 {
                   institutions.map((institution) =>
                     <Option value={institution.id} key={`${institution.id}`}>{institution.name}</Option>
@@ -82,33 +88,40 @@ const Donation = () => {
             <Form.Item
               label='Credit Card number'
               name='cardNumber'
-              rules={[inputRequired, dpi]}
+              rules={[inputRequired, creditCard]}
             >
-              <Input maxLength={13} />
+              <InputNumber maxLength={16} style={{ width: 350 }} stringMode />
             </Form.Item>
             <Row>
               <Col span={12}>
-                <Form.Item label='Expiration date' name='expDate'>
-                  <DatePicker format={dateFormat} />
+                <Form.Item label='Expiration date' name='expDate' rules={[inputRequired]}>
+                  <DatePicker format={dateFormat} picker='month' disabledDate={disabledDate} />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   label='CVC'
                   name='lastName'
-                  rules={[inputRequired]}
+                  rules={[inputRequired, cvc]}
                 >
-                  <Input />
+                  <InputNumber max={999} maxLength={3} stringMode style={{ width: 169 }} />
                 </Form.Item>
               </Col>
             </Row>
 
             <Form.Item
-              label='Amount'
+              label='Amount '
               name='amount'
-              rules={[inputRequired, dpi]}
+              rules={[inputRequired]}
             >
-              <Input maxLength={13} />
+              <InputNumber
+                style={{
+                  width: 200
+                }}
+                formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                defaultValue={10}
+              />
             </Form.Item>
 
             <Form.Item className='login-input'>
