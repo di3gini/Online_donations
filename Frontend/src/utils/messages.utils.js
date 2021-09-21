@@ -1,2 +1,2 @@
-export const GENERIC_MESSAGE_ERROR = 'Ocurrio un error, por favor revise sus datos o intenta más tarde'
-export const UNEXPECTED_OOPS = 'Ocurrio un error, por favor intenta más tarde'
+export const GENERIC_MESSAGE_ERROR = 'An error ocurred, please checkout your data or try again later'
+export const UNEXPECTED_OOPS = 'An error ocurred, please try again later'

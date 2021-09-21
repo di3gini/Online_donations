@@ -16,3 +16,8 @@ export const donate = (amount, idUser, idInstitution) => dispatch => {
   const process = () => DonationsService.donate({ amount, idUser, idInstitution })
   dispatch(executeAction(actionTypes.DONATE, process))
 }
+
+export const getDonationsByUser = (idUser) => dispatch => {
+  const process = () => DonationsService.getDonationsByUser({ idUser })
+  dispatch(executeAction(actionTypes.GET_DONATIONSBYUSER, process))
+}
