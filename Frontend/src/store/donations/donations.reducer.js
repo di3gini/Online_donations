@@ -33,7 +33,6 @@ const DonationsReducer = (state, { type, data }) => {
         }
       } else return { ...state, institutions: [] }
     default:
-      console.log('default')
       return state || initialState
   }
 }

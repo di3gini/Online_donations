@@ -22,7 +22,6 @@ const { Option } = Select
 
 const Donation = () => {
   const [showError, setShowError] = useState(false)
-  // const [showSucces, setShowSucces] = useState(false)
   const dispatch = useDispatch()
   const toggleError = () => setShowError(!showError)
   const token = useSelector(selectAccessToken)
@@ -34,7 +33,6 @@ const Donation = () => {
   const countries = useSelector(selectCountries)
   const institutions = useSelector(selectInstitutions)
   const user = useSelector(selectCurrentUser)
-  // const [modal, contextHolder] = Modal.useModal()
   const [showSuccess, setShowSuccess] = useState(false)
   const [donateForm] = Form.useForm()
   const onSubmit = ({ amount, idInstitution }) => {

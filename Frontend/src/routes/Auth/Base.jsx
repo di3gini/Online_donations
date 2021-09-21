@@ -15,7 +15,7 @@ const Base = ({ Component }) => {
   const token = useSelector(selectAccessToken)
   const toReport = () => history.push('/report')
   const doLogout = () => dispatch(logout())
-
+  const toLogin = () => history.push('/login')
   return (
     <Layout>
       <Header className='dashboard-header'>
@@ -34,11 +34,11 @@ const Base = ({ Component }) => {
             {
               !token &&
                 <Tooltip title='Login' placement='bottomLeft'>
-                  <Button type='text' size='large' icon={<UserOutlined style={{ color: '#FFFFFF' }} />} onClick={toReport} />
+                  <Button type='text' size='large' icon={<UserOutlined style={{ color: '#FFFFFF' }} />} onClick={toLogin} />
                 </Tooltip>
             }
             <Tooltip title='See donations' placement='bottomLeft'>
-              <Button type='text' size='large' icon={<FileTextOutlined style={{ color: '#FFFFFF' }} />} />
+              <Button type='text' size='large' icon={<FileTextOutlined style={{ color: '#FFFFFF' }} />} onClick={toReport} />
             </Tooltip>
           </div>
         </Row>
