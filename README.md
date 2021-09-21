@@ -16,7 +16,7 @@ Simple online donations system done using [Quarkus](https://quarkus.io/), [React
 
 It's necessary to build the quarkus project before our docker compose, for this, making use of Gradle, we go into the backend folder, execute the next command:
 
-    gradle build
+    ./gradlew build
 
 ## Docker compose
 
