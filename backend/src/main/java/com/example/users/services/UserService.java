@@ -44,7 +44,7 @@ public class UserService {
                 .orElse(null);
 
         if (user != null)
-            throw new WSException("Ya existe un usuario registrado con este email");
+            throw new WSException("User registered with that mail");
 
         user = new User();
         user.setEmail(email);

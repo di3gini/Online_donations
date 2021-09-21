@@ -27,7 +27,7 @@ public class BaseModelListener {
     private Long getCurrentUserId() {
         SessionHolder currentUser = CDI.current().select(SessionHolder.class, new Annotation[0]).get();
         UserDTO user = currentUser.getUser();
-        return (user != null) ? user.getId() : null;
+        return (user != null) ? user.getIdUser() : null;
     }
 
 }

@@ -14,7 +14,7 @@ public class RegisterRequest {
     private String email;
 
     @NotEmpty
-    @Size(min = 8,message = "La contraseña debe tener al menos 8 caracteres.")
+    @Size(min = 8,message = "Password must be at least 8 characters.")
     private String password;
 
     @NotEmpty
@@ -24,8 +24,8 @@ public class RegisterRequest {
     private String surname;
 
     @NotEmpty
-    @Size(min = 13, max = 13, message = "El DPI debe tener 13 digitos, sin espacios")
-    @Pattern(regexp = "[0-9]+", message = "El DPI debe tener 13 digitos, sin espacios")
+    @Size(min = 13, max = 13, message = "ID must have at least 13 digits")
+    @Pattern(regexp = "[0-9]+", message = "ID must have at least 13 digits")
     private String idNumber;
 
 }

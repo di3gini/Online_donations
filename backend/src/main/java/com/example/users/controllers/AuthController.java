@@ -11,10 +11,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -40,7 +38,7 @@ public class AuthController {
     }
 
     @POST
-    @Path("/register")
+    @Path("/register/")
     public LoginResponse register(@Valid RegisterRequest request){
         UserDTO user = userService.register(
                 request.getEmail(),
@@ -55,7 +53,7 @@ public class AuthController {
     private LoginResponse getLoginResponse(UserDTO user) {
         String token = Jwt
                 .claims()
-                .subject(String.valueOf(user.getId()))
+                .subject(String.valueOf(user.getIdUser()))
                 .upn(user.getEmail())
                 .issuedAt(Instant.now())
                 .issuer(issuer)
