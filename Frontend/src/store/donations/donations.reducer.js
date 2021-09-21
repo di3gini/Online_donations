@@ -3,7 +3,8 @@ import { actionTypes } from './donations.types'
 
 const initialState = {
   countries: [],
-  institutions: []
+  institutions: [],
+  donations: []
 }
 
 const DonationsReducer = (state, { type, data }) => {
@@ -13,6 +14,17 @@ const DonationsReducer = (state, { type, data }) => {
         ...state,
         countries: data.countries
       }
+    case successState(actionTypes.GET_DONATIONSBYUSER):
+      if (data !== undefined) {
+        const aux = []
+        for (const i in data) {
+          aux.push(data[i])
+        }
+        return {
+          ...state,
+          donations: aux
+        }
+      } else return { ...state, donations: [] }
     case successState(actionTypes.GET_INSTITUTIONS):
       if (data.institutions !== undefined) {
         return {

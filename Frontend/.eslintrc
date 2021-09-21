@@ -14,7 +14,15 @@
         "allowArrowFunctions": true
       }
     ],
-    "no-console": "off",
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
     "no-var": "error",
     "prefer-arrow-callback": "error",
     "quote-props": [
