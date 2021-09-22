@@ -26,13 +26,13 @@ After building the quarkus project, we are ready to deploy our docker container.
 
 ## Setting up MySQL database
 
-We have a container running with a dist of MySQL, we just need to connect to it with any database tool of our preference, or via CLI to the direction
+We have a container running with a dist of MySQL, we just need to connect to it with any database manager of our preference (DataGrip, DBeaver, etc.), or via CLI to the direction:
 
 > localhost:3300
 
 That way, we can execute the three sql files included on the "SQL" folder, where you can also find the ER diagram used. The execution order is:
 
- 1. Database.sql
+ 1. Online_Donations.sql
  2. Countries.sql
  3. Institutions.sql
 
@@ -40,4 +40,5 @@ That way, we can execute the three sql files included on the "SQL" folder, where
 
 After all this, we are ready to go and try it. Just access from your browser to the addres:
 
-> http://localhost:9090/login
+> http://localhost:9090/
+
